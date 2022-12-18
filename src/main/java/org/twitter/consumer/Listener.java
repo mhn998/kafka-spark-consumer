@@ -92,6 +92,7 @@ public class Listener {
 						StringDecoder.class, StringDecoder.class, kafkaParams,
 						topics);
 
+		TweetHbaseTableIn.init();
 		IntWritable count = new IntWritable(0);
 		stream.foreachRDD(rdd -> {
 			count.set(count.get() + 1);

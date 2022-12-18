@@ -5,13 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cfe65a5c-9822-478a-9e44-3dde074a2610" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/twitter/consumer/Listener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/twitter/consumer/Listener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/twitter/dto/Tweet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/twitter/dto/Tweet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/twitter/sparkSql/SparkSql.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/twitter/sparkSql/SparkSql.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,10 +46,18 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/Users/mughrabi/MIU_Courses/BDT/TwitterConsumer/hive",
     "nodejs_package_manager_path": "npm"
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/hive" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/hive" />
+    </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="org.twitter.hbase" />
       <recent name="org.twitter.dto" />
@@ -103,7 +108,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1671300311634</updated>
-      <workItem from="1671300313071" duration="23283000" />
+      <workItem from="1671300313071" duration="25490000" />
+      <workItem from="1671339532354" duration="9751000" />
     </task>
     <servers />
   </component>

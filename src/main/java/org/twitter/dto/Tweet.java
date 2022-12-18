@@ -11,9 +11,8 @@ public class Tweet {
 
 	private String text;
 	private boolean isRetweet;
-	private String inReplyToStatusId;
 
-	private List<String> hashTags = new ArrayList<String>();
+	private List<String> hashTags = new ArrayList<>();
 
 	private String username;
 
@@ -40,16 +39,12 @@ public class Tweet {
 		return isRetweet;
 	}
 
+	public void setRetweet(Boolean isRetweet) {
+		this.isRetweet = isRetweet;
+	}
+
 	public void setRetweet() {
 		this.isRetweet = this.text != null ? this.text.startsWith("RT @") : false;
-	}
-
-	public String getInReplyToStatusId() {
-		return inReplyToStatusId;
-	}
-
-	public void setInReplyToStatusId(String inReplyToStatusId) {
-		this.inReplyToStatusId = inReplyToStatusId;
 	}
 
 	public List<String> getHashTags() {
@@ -70,6 +65,10 @@ public class Tweet {
 		this.hashTags = strs;
 	}
 
+	public void setHashTags(List<String> hashTags) {
+		this.hashTags = hashTags;
+	}
+
 	public String getUsername() {
 		return username;
 	}
@@ -83,6 +82,10 @@ public class Tweet {
 			}
 		}
 
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getTimeStamp() {
@@ -104,8 +107,7 @@ public class Tweet {
 	@Override
 	public String toString() {
 		return "Tweet [id=" + id + ", text=" + text + ", isRetweet="
-				+ isRetweet + ", inReplyToStatusId=" + inReplyToStatusId
-				+ ", hashTags=" + hashTags + ", username=" + username
+				+ isRetweet + ", hashTags=" + hashTags + ", username=" + username
 				+ ", timeStamp=" + timeStamp + ", lang=" + lang + "]";
 	}
 

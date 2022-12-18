@@ -31,7 +31,7 @@ public class Listener {
 //		SQLContext sqlContext = new SQLContext(jsc.sc());
 
 
-		Set<String> topics = new HashSet<>(Collections.singletonList("demo"));
+		Set<String> topics = new HashSet<>(Collections.singletonList("tweets"));
 		Map<String, String> kafkaParams = new HashMap<>();
 		kafkaParams.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
 				"localhost:9092");
@@ -46,6 +46,7 @@ public class Listener {
 						StringDecoder.class, StringDecoder.class, kafkaParams,
 						topics);
 
+		TweetHbaseTableIn.init();
 		IntWritable count = new IntWritable(0);
 		stream.foreachRDD(rdd -> {
 			count.set(count.get() + 1);

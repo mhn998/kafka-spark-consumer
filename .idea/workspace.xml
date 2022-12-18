@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cfe65a5c-9822-478a-9e44-3dde074a2610" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/twitter/consumer/Listener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/twitter/consumer/Listener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/twitter/dto/Tweet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/twitter/dto/Tweet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/twitter/sparkSql/SparkSql.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/twitter/sparkSql/SparkSql.java" afterDir="false" />
-    </list>
+    <list default="true" id="cfe65a5c-9822-478a-9e44-3dde074a2610" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -109,7 +104,7 @@
       <option name="presentableId" value="Default" />
       <updated>1671300311634</updated>
       <workItem from="1671300313071" duration="25490000" />
-      <workItem from="1671339532354" duration="9751000" />
+      <workItem from="1671339532354" duration="10108000" />
     </task>
     <servers />
   </component>

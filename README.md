@@ -117,7 +117,7 @@ ____
 
 https://developer.twitter.com/en/docs/twitter-api
 
-**We used twitter api v2 to get the data from 2/search/filter endpoint. it needs authorization using a bearer token or OAuth.
+**We used twitter api v2 to get the data from /2/tweets/search/stream endpoint. it needs authorization using a bearer token or OAuth.
 
 ____
 

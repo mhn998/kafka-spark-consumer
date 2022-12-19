@@ -1,6 +1,10 @@
 package org.twitter.consumer;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import com.twitter.clientlib.JSON;
+import com.twitter.clientlib.model.StreamingTweetResponse;
+
 import kafka.serializer.StringDecoder;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -21,12 +25,13 @@ import org.apache.spark.streaming.Durations;
 import org.apache.spark.streaming.api.java.JavaPairInputDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.apache.spark.streaming.kafka.KafkaUtils;
-
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.twitter.dto.Tweet;
 import org.twitter.hbase.TweetHbaseTableIn;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.*;
 
 public class Listener {
@@ -42,30 +47,32 @@ public class Listener {
 	private static Table tweets;
 
 
+	@SuppressWarnings("deprecation")
 	public static void main(String[] args) throws Exception {
-		SparkConf conf = new SparkConf().setMaster("local[*]").setAppName("first-topic-listener");
+		SparkConf conf = new SparkConf().setAppName("first-topic-listener");
 		JavaSparkContext jsc = new JavaSparkContext(conf);
 		JavaStreamingContext ssc = new JavaStreamingContext(jsc,
 				Durations.seconds(5));
 
 		try {
 			connection = ConnectionFactory.createConnection(config);
-			admin = connection.getAdmin();
-
-			HTableDescriptor table = new HTableDescriptor(
-					TableName.valueOf(TABLE_NAME));
-			table.addFamily(new HColumnDescriptor(CF_DEFAULT)
-					.setCompressionType(Compression.Algorithm.NONE));
-			table.addFamily(new HColumnDescriptor(CF_GENERAL)
-					.setCompressionType(Compression.Algorithm.NONE));
-
-			System.out.print("Creating table.... ");
-
-			if (admin.tableExists(table.getTableName())) {
-				admin.disableTable(table.getTableName());
-				admin.deleteTable(table.getTableName());
-			}
-			admin.createTable(table);
+			/* Table creation is not working so commented */
+//			admin = connection.getAdmin();
+//
+//			HTableDescriptor table = new HTableDescriptor(
+//					TableName.valueOf(TABLE_NAME));
+//			table.addFamily(new HColumnDescriptor(CF_DEFAULT)
+//					.setCompressionType(Compression.Algorithm.NONE));
+//			table.addFamily(new HColumnDescriptor(CF_GENERAL)
+//					.setCompressionType(Compression.Algorithm.NONE));
+//
+//			System.out.print("Creating table.... ");
+//
+//			if (admin.tableExists(table.getTableName())) {
+//				admin.disableTable(table.getTableName());
+//				admin.deleteTable(table.getTableName());
+//			}
+//			admin.createTable(table);
 
 			tweets = connection.getTable(TableName.valueOf(TABLE_NAME));
 
@@ -94,21 +101,22 @@ public class Listener {
 
 		TweetHbaseTableIn.init();
 		IntWritable count = new IntWritable(0);
+		Type localVarReturnType = new TypeToken<StreamingTweetResponse>() {}.getType();
+		JSON json = new JSON();
+		
 		stream.foreachRDD(rdd -> {
 			count.set(count.get() + 1);
 			System.out.println("number of records processed:  "  + count);
 
-			JavaRDD<Tweet> jrdd = rdd.map(f -> {
+			JavaRDD<Tweet> jrdd = rdd
+					.filter(f -> f._2 != null && f._2.length() > 0)
+					.map(f -> {
 
-				JSONObject json = new JSONObject(f._2);
-				String data = json.get("data").toString();
-
-
-				Tweet tweet = new Gson().fromJson(data,
-						Tweet.class);
-				setNonPopulatedFields(tweet);
-
-				return tweet;
+				System.out.println("------------" + f._2);
+				StreamingTweetResponse response = json.getGson()
+						.fromJson(f._2, localVarReturnType);
+				
+				return Tweet.buildTweet(response);
 			});
 
 			jrdd.foreach(t -> {
@@ -120,11 +128,5 @@ public class Listener {
 
 		ssc.start();
 		ssc.awaitTermination();
-	}
-
-	public static void setNonPopulatedFields(Tweet tweet) {
-		tweet.setHashTags();
-		tweet.setUsername();
-		tweet.setRetweet();
 	}
 }

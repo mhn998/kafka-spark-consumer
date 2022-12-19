@@ -79,6 +79,8 @@ public class TweetHbaseTableIn {
 
 		row.addColumn(CF_GENERAL_BYTES, "timestamp_ms".getBytes(), getBytes(tweet.getTimeStamp()));
 		row.addColumn(CF_GENERAL_BYTES, "lang".getBytes(), getBytes(tweet.getLang()));
+		row.addColumn(CF_GENERAL_BYTES, "source".getBytes(), getBytes(tweet.getSource()));
+		row.addColumn(CF_GENERAL_BYTES, "geo_bbox".getBytes(), getBytes(tweet.getGeoBbox()));
 
 		tweets.put(row);
 	}

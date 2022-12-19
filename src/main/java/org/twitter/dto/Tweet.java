@@ -5,6 +5,17 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.hadoop.hive.ql.parse.HiveParser_IdentifiersParser.nullCondition_return;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.twitter.clientlib.model.Expansions;
+import com.twitter.clientlib.model.Geo;
+import com.twitter.clientlib.model.Place;
+import com.twitter.clientlib.model.StreamingTweetResponse;
+import com.twitter.clientlib.model.User;
+
 public class Tweet {
 
 	private String id;
@@ -18,6 +29,25 @@ public class Tweet {
 
 	private String timeStamp;
 	private String lang;
+	private String source;
+	private String authorId;
+	private String geoBbox;
+	
+	public String getGeoBbox() {
+		return geoBbox;
+	}
+	
+	public void setGeoBbox(String bbox) {
+		geoBbox = bbox;
+	}
+	
+	public String getAuthorId() {
+		return authorId;
+	}
+	
+	public void setAuthorId(String authorId) {
+		this.authorId = authorId;
+	}
 
 	public String getId() {
 		return id;
@@ -103,6 +133,14 @@ public class Tweet {
 	public void setLang(String lang) {
 		this.lang = lang;
 	}
+	
+	public String getSource() {
+		return source;
+	}
+	
+	public void setSource(String source) {
+		this.source = source;
+	}
 
 	@Override
 	public String toString() {
@@ -111,5 +149,48 @@ public class Tweet {
 				+ ", timeStamp=" + timeStamp + ", lang=" + lang + "]";
 	}
 
-	
+	public static Tweet buildTweet(StreamingTweetResponse response) {
+		Tweet tweet = new Tweet();
+		
+		com.twitter.clientlib.model.Tweet tweetData = response.getData();
+		
+		if(tweetData != null) {
+			tweet.setId(tweetData.getId());
+			tweet.setAuthorId(tweetData.getAuthorId());
+			tweet.setSource(tweetData.getSource());
+			tweet.setText(tweetData.getText());
+			tweet.setLang(tweetData.getLang());
+			tweet.setTimeStamp((tweetData.getCreatedAt().toEpochSecond() * 1000) + "");
+		}
+		
+		Expansions includes = response.getIncludes();
+		if(includes != null) {
+			List<User> users = includes.getUsers();
+			
+			if(users != null) {
+				for(User user: users) {
+					if(tweet.authorId.equals(user.getId())) {
+						tweet.setUsername(user.getUsername());
+						break;
+					}
+				}
+			}
+			
+			List<Place> places = includes.getPlaces();
+			
+			if(places != null && places.size() > 0) {
+				Place place = places.get(0);
+				
+				if(place != null && place.getGeo() != null && place.getGeo().getBbox() != null) {
+					String s = place.getGeo().getBbox().toString();
+					tweet.setGeoBbox(s.substring(1, s.length() - 1)); // 23, 23, 23, 23 (removed the square brackets)
+				}
+			}
+		}
+		
+		tweet.setHashTags();
+		tweet.setRetweet();
+		
+		return tweet;
+	}
 }

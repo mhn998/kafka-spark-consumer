@@ -1,0 +1,1 @@
+echo "create 'tweets', 'tweet-info', 'general-info'" | hbase shell

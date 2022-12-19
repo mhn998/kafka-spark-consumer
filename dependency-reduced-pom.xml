@@ -89,14 +89,9 @@
     </pluginRepository>
   </pluginRepositories>
   <properties>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <kafka.version>0.9.0.1</kafka.version>
-    <hbase.version>1.0.0</hbase.version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <hadoop.version>2.6.0</hadoop.version>
     <scala.version>2.10.4</scala.version>
-    <scala.dep.version>2.10</scala.dep.version>
-    <spark.version>1.6.0</spark.version>
     <maven.compiler.source>1.8</maven.compiler.source>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 </project>

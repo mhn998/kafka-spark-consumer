@@ -139,5 +139,5 @@ HBase table loaded by spark streaming kafka consumer
 
 https://developer.twitter.com/en/docs/twitter-api
 
-## SparkSQL part
+## SparkSQL and Visualization part
 https://github.com/barahijawi/sparkSQL-BDT

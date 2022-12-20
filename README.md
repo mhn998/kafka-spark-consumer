@@ -1,14 +1,10 @@
-
-# Project name : Twitter
-
-____
+# Project name : Twitter Data Streaming, Analysis and Visualization
 
 ## Contributors:
 1. Baraa Batta
 2. Kidist Zihon
 3. Muhenned Elmughrabi
 4. Ranjan Paudel
-
 
 ## Synopsis:
 
@@ -40,71 +36,93 @@ ___
 
 **What pain point does this project solve?**
 
-> *efficient way to handle, store and analyze data that is generated at a fast pace
+> * efficient way to handle, store and analyze data that is generated at a fast pace
 
 ____
 
+## Requirements:
+
+1. Any OS (linux, Windows , Mac) has VM with Cloudera quick start or Docker with cloudera quick start image (includes: `Hadoop`, `Spark`, `HBase`, `Hive`) [Cloudera quick start - CentOS is preferred]
+2. Kafka is needed for this project.([Download](https://kafka.apache.org/downloads) any binary)
+3. Maven as build management tool for client dependencies
+4. IDE(Intellij/Eclipse)
+5. Twitter Developer account and Twitter API
+___
 
 ## Installation and usage:
+### Steps
+1. Setup Twitter Stream API(v2) (base URL: `https://api.twitter.com`)
+    - Create Twitter Developer account
+    - Create an app and get keys
+    - Save the provided keys: `API Key`, `API key secret` and `Bearer Token`
+    - Only the `Bearer Token` is needed in our case
+    - Use endpoint `POST /2/tweets/search/stream/rules` to create/delete rules for filtering tweets
+    - Use endpoint `GET /2/tweets/search/stream` to get the stream of filtered tweets
 
-### Cloudera quick start - CentOS is preferred
+2. Create a HBase table that will be loaded by spark streaming consumer in real time
+    ```
+    $ echo "create 'tweets', 'tweet-info', 'general-info'" | hbase shell
+    ```
 
-1. `Clone two Repositories` [producer](https://github.com/mhn998/kafka-twitter-producer) | [consumer](https://github.com/mhn998/kafka-spark-consumer)
+3. Clone two Repositories [producer](https://github.com/mhn998/kafka-twitter-producer) and [consumer](https://github.com/mhn998/kafka-spark-consumer)
 
-2. Start Zookeeper server and kafka server using ```bin/zookeeper-server-start.sh config/zookeeper.properties & bin/kafka-server-start.sh config/server.properties ```
+4. Start Zookeeper server and kafka server using 
+    ```
+    $ bin/zookeeper-server-start.sh config/zookeeper.properties
+    $ bin/kafka-server-start.sh config/server.properties
+    ```
 
+5. create kafka topic using (in our case `tweets` is the topic_name)
+    ```
+    $ bin/kafka-topic --create topic_name --bootstrapserver localhost:9092
+    ```
 
-3. create kafka topic using bin/kafka-topic --create topic_name(e.g tweets as general in our case) --bootstrapserver localhost:9092`
+6. Run kafka-twitter-producer project from the main class `org.producer.TwitterProducer` using intellij/eclipse setting on VM.<br>In docker container, build a fat jar (mvn package), copy it to container and run it using 
+    ```
+    $ java -cp org.producer.TwitterProducer twitter-producer-jar-with-dependencies.jar
+    ```
 
-
-4.
-```
-run kafka-twitter-producer project from the main class TwitterProducer.java using intellij/eclipse setting on VM or docker container by building a fat jar (mvn package), copy it to container and run it  
-using java -jar twitter-producer-jar-with-dependencies.jar
-
-```
-
-5.
-```
-
-run kafka consumer from the main class Listener.java using intellij/eclipse setting on VM or docker container by building a fat jar (mvn package), copy it to container and run it 
-using java -jar twitter-consumer-jar-with-dependencies.jar
-
-```
-
-
-6.
-```
-fetchig of real time streams will automatically starting when running producer. on the other hand the listener will be listening to these events on that topic continuously 
-using spark streaming in order to be able to save this data directly to our hbase table with two main column familis, tweet info and general info
-
-```
-
-7. Optionally start hive script to create external table for hive
-
-8. Optionally start sparkSql class in consumer to do further real time queries on the data in Hbase
+7. Run kafka consumer from the main class `org.twitter.consumer.Listener` using intellij/eclipse setting on VM.<br>In docker container, build a fat jar (mvn package), copy it to container and run it
+using
+    ```
+    $ java -cp org.twitter.consumer.Listener twitter-consumer-jar-with-dependencies.jar
+    ```
+    Or submit as a spark job
+    ```
+    $ spark-submit --class "org.twitter.consumer.Listener" --master {local[*] | yarn} twitter-consumer-jar-with-dependencies.jar
+    ```
 
 
-### OS:
-No specific OS needed. since we are using VM/Virtual Box (any virtualization technology) and Cloudera quick start image or container.
-all other dependencies are already included on these images
+8. Fetching of real time streams will automatically start when running producer. On the other hand, the listener (or consumer) will be listening to these events on that topic continuously 
+using spark streaming in order to be able to save this data directly to our HBase table with two main column families, `tweet-info` and `general-info`
+
+9. Optionally start the hive script to create external table for hive and load the data of HBase to hive
+    ```
+    CREATE EXTERNAL TABLE tweets (
+        id Bigint,
+        username String,
+        text String,
+        is_retweet boolean,
+        hashtags String,
+        timestamp_ms Bigint,
+        lang String,
+        source String,
+        geo_bbox String
+    )
+    STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+        WITH SERDEPROPERTIES (
+            'hbase.columns.mapping'=':key,general-info:username,tweet-info:text,tweet-info:is_retweet,tweet-info:hashtags,general-info:timestamp_ms,general-info:lang,general-info:source,general-info:geo_bbox'
+        )
+        TBLPROPERTIES(
+            'hbase.table.name'='tweets',
+            'hbase.mapred.output.outputtable'='tweets'
+        );
+    ```
+
+10. Optionally start sparkSql class in consumer to do further real time queries on the data in HBase
 ____
 
-
-## Software Requirements:
-
-1. any OS(linux, Windows , Mac) has VM with Cloudera quick start or Docker with cloudera quick start image (includes: Hadoop, Spark, Hbase, Hive)
-
-2. Kafka is needed for this project.
-
-3. Maven as build management tool for client dependencies
-
-4. IDE(Intellij/Eclipse)
-
-
-____
-
-## non-functional requirments:
+## Non-functional requirments:
 
 * Data integrity.
 * Portability.
@@ -112,18 +130,14 @@ ____
 * Adaptability
 ____
 
+## Screenshots
+HBase table loaded by spark streaming kafka consumer
+![Hbase_table_loaded](screenshots/hbase_table_loaded.png)
 
-## API references:
+
+## Twitter API references:
 
 https://developer.twitter.com/en/docs/twitter-api
 
-**We used twitter api v2 to get the data from 2/search/filter endpoint. it needs authorization using a bearer token or OAuth.
-
-____
-
-
-
-
-
-
-
+## SparkSQL part
+https://github.com/barahijawi/sparkSQL-BDT
